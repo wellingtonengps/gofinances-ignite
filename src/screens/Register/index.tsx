@@ -41,11 +41,9 @@ const schema = Yup.object().shape({
 
 export function Register() {
   const [transactionType, setTransactionType] = useState("");
-  const [categoryModalOpen, setCategoryModalOpen0] = useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
 
   const { user } = useAuth();
-
-  const dataKey = `@gofinance:transactions_user:${user.id}`;
 
   const [category, setCategory] = useState({
     key: "category",
@@ -68,11 +66,13 @@ export function Register() {
   }
 
   function handleOpenSelectCategoryModal() {
-    setCategoryModalOpen0(true);
+    setTimeout(() => {
+      setCategoryModalOpen(true);
+    }, 1000);
   }
 
   function handleCloseSelectCategoryModal() {
-    setCategoryModalOpen0(false);
+    setCategoryModalOpen(false);
   }
 
   async function handleRegister(form: FormData) {
@@ -94,6 +94,7 @@ export function Register() {
     };
 
     try {
+      const dataKey = `@gofinance:transactions_user:${user.id}`;
       const data = await AsyncStorage.getItem(dataKey);
       const currentData = data ? JSON.parse(data) : [];
       const dataFormatted = [...currentData, newTransaction];
@@ -152,13 +153,14 @@ export function Register() {
             </TransactionsType>
 
             <CategorySelectButton
+              testID="button-category"
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
             />
           </Fields>
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
         </Form>
-        <Modal visible={categoryModalOpen}>
+        <Modal testID="modal-category" visible={categoryModalOpen}>
           <CategorySelect
             category={category}
             setCategory={setCategory}
